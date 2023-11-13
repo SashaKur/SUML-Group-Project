@@ -1,0 +1,17 @@
+[tool.kedro]
+package_name = "book_recommendation_ml"
+project_name = "book-recommendation-ml"
+kedro_init_version = "0.18.14"
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+addopts = """
+--cov-report term-missing \
+--cov src/book_recommendation_ml -ra"""
+
+[tool.coverage.report]
+fail_under = 0
+show_missing = true
+exclude_lines = ["pragma: no cover", "raise NotImplementedError"]

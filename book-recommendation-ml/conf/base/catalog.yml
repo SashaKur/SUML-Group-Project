@@ -6,6 +6,7 @@ book_ratings:
     type: pandas.CSVDataSet
     filepath: data/01_raw/BX-Book-Ratings.csv
     load_args:
+        nrows: 100000
         sep: ';'
         on_bad_lines: "skip"
         encoding: "latin-1"
@@ -39,3 +40,10 @@ cleaned_data:
 renamed_data:
     type: pandas.CSVDataSet
     filepath: data/04_feature/renamed_data.csv
+primary_data:
+    type: pandas.CSVDataSet
+    filepath: data/03_primary/primary_data.csv
+regressor:
+  type: pickle.PickleDataset
+  filepath: data/06_models/regressor.pickle
+  versioned: true

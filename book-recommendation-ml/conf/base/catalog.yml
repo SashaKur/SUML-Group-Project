@@ -31,6 +31,18 @@ books:
         encoding: "latin-1"
         usecols: ['ISBN', 'Book-Title', 'Book-Author', 'Year-Of-Publication', 'Publisher', 'Image-URL-S',
                      'Image-URL-M', 'Image-URL-L']
+book_rating_merged_cleaned:
+    type: pandas.CSVDataSet
+    filepath: data/02_intermediate/book_rating_merged_cleaned.csv
+user_rating_count:
+    type: pandas.CSVDataSet
+    filepath: data/03_primary/user_rating_count.csv
+user_rating_count_normalised:
+    type: pandas.CSVDataSet
+    filepath: data/05_model_input/user_rating_count_normalised.csv
+top_ten_ranked:
+    type: pandas.CSVDataSet
+    filepath: data/07_model_output/top_ten_ranked.csv
 merged_data:
     type: pandas.CSVDataSet
     filepath: data/02_intermediate/merged_data.csv

@@ -6,7 +6,6 @@ book_ratings:
     type: pandas.CSVDataSet
     filepath: data/01_raw/BX-Book-Ratings.csv
     load_args:
-        nrows: 100000
         sep: ';'
         on_bad_lines: "skip"
         encoding: "latin-1"

@@ -54,7 +54,7 @@ renamed_data:
 primary_data:
     type: pandas.CSVDataSet
     filepath: data/03_primary/primary_data.csv
-regressor:
-  type: pickle.PickleDataset
-  filepath: data/06_models/regressor.pickle
-  versioned: true
+# regressor:
+#   type: pickle.PickleDataset
+#   filepath: data/06_models/regressor.pickle
+#   versioned: true

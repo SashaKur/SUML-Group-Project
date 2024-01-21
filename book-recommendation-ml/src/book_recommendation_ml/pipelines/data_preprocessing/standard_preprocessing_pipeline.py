@@ -1,8 +1,3 @@
-"""
-This is a boilerplate pipeline 'data_preparation'
-generated using Kedro 0.18.14
-"""
-
 from kedro.pipeline import Pipeline, pipeline, node
 from .nodes import (
     merge_datasets,
@@ -43,7 +38,7 @@ def create_data_preprocessing_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=drop_rating_zero_rows,
-                inputs="data_without_zero_year",
+                inputs="cleaned_data",
                 outputs="data_without_zero_rating",
                 name="drop_rating_zero_rows_node",
             ),

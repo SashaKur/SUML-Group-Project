@@ -5,10 +5,9 @@ import pandas as pd
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 from sklearn.preprocessing import MinMaxScaler
-
-tf.compat.v1.disable_v2_behavior()
+import pickle
 
 
 def split_data(data: pd.DataFrame, parameters: dict) -> tuple:
@@ -23,6 +22,7 @@ def split_data(data: pd.DataFrame, parameters: dict) -> tuple:
 def train_model(X_train: pd.DataFrame, y_train: pd.Series) -> KNeighborsRegressor:
     regressor = KNeighborsRegressor(n_neighbors=5)
     regressor.fit(X_train, y_train)
+    pickle.dump(regressor, open("regressor.sav", 'wb'))
     return regressor
 
 
@@ -77,33 +77,34 @@ def decoder(x, weights, biases):
 
 
 def train_tf_model(users, books, user_book_matrix, combined):
-    tf.compat.v1.disable_v2_behavior()
+    tf.compat.v1.disable_eager_execution()
+
     num_input = combined["Book-Title"].nunique()
     num_hidden_1 = 10
     num_hidden_2 = 5
 
-    X = tf.placeholder(tf.float64, [None, num_input])
+    X = tf.compat.v1.placeholder(tf.float64, [None, num_input])
 
     weights = {
         "encoder_h1": tf.Variable(
-            tf.random_normal([num_input, num_hidden_1], dtype=tf.float64)
+            tf.compat.v1.random_normal([num_input, num_hidden_1], dtype=tf.float64)
         ),
         "encoder_h2": tf.Variable(
-            tf.random_normal([num_hidden_1, num_hidden_2], dtype=tf.float64)
+            tf.compat.v1.random_normal([num_hidden_1, num_hidden_2], dtype=tf.float64)
         ),
         "decoder_h1": tf.Variable(
-            tf.random_normal([num_hidden_2, num_hidden_1], dtype=tf.float64)
+            tf.compat.v1.random_normal([num_hidden_2, num_hidden_1], dtype=tf.float64)
         ),
         "decoder_h2": tf.Variable(
-            tf.random_normal([num_hidden_1, num_input], dtype=tf.float64)
+            tf.compat.v1.random_normal([num_hidden_1, num_input], dtype=tf.float64)
         ),
     }
 
     biases = {
-        "encoder_b1": tf.Variable(tf.random_normal([num_hidden_1], dtype=tf.float64)),
-        "encoder_b2": tf.Variable(tf.random_normal([num_hidden_2], dtype=tf.float64)),
-        "decoder_b1": tf.Variable(tf.random_normal([num_hidden_1], dtype=tf.float64)),
-        "decoder_b2": tf.Variable(tf.random_normal([num_input], dtype=tf.float64)),
+        "encoder_b1": tf.Variable(tf.compat.v1.random_normal([num_hidden_1], dtype=tf.float64)),
+        "encoder_b2": tf.Variable(tf.compat.v1.random_normal([num_hidden_2], dtype=tf.float64)),
+        "decoder_b1": tf.Variable(tf.compat.v1.random_normal([num_hidden_1], dtype=tf.float64)),
+        "decoder_b2": tf.Variable(tf.compat.v1.random_normal([num_input], dtype=tf.float64)),
     }
 
     encoder_op = encoder(X, weights, biases)
@@ -113,20 +114,20 @@ def train_tf_model(users, books, user_book_matrix, combined):
     y_true = X
 
     loss = tf.losses.mean_squared_error(y_true, y_pred)
-    optimizer = tf.train.RMSPropOptimizer(0.03).minimize(loss)
-    eval_x = tf.placeholder(
+    optimizer = tf.compat.v1.train.RMSPropOptimizer(0.03).minimize(loss)
+    eval_x = tf.compat.v1.placeholder(
         tf.int32,
     )
-    eval_y = tf.placeholder(
+    eval_y = tf.compat.v1.placeholder(
         tf.int32,
     )
-    pre, pre_op = tf.metrics.precision(labels=eval_x, predictions=eval_y)
+    pre, pre_op = tf.compat.v1.metrics.precision(labels=eval_x, predictions=eval_y)
 
-    init = tf.global_variables_initializer()
-    local_init = tf.local_variables_initializer()
+    init = tf.compat.v1.global_variables_initializer()
+    local_init = tf.compat.v1.local_variables_initializer()
     pred_data = pd.DataFrame()
 
-    with tf.Session() as session:
+    with tf.compat.v1.Session() as session:
         epochs = 100
         batch_size = 35
 
@@ -140,7 +141,7 @@ def train_tf_model(users, books, user_book_matrix, combined):
             avg_cost = 0
             for batch in user_book_matrix:
                 _, l = session.run([optimizer, loss], feed_dict={X: batch})
-                avg_cost += l
+                avg_cost += np.mean(l)
 
             avg_cost /= num_batches
 
@@ -163,9 +164,10 @@ def train_tf_model(users, books, user_book_matrix, combined):
         index_1 = pred_data.set_index(keys).index
         index_2 = combined.set_index(keys).index
 
-        top_ten_ranked = pred_data[~index_1.isin(index_2)]
-        top_ten_ranked = top_ten_ranked.sort_values(
+        top_ranked = pred_data[~index_1.isin(index_2)]
+        top_ranked = top_ranked.sort_values(
             ["User-ID", "Book-Rating"], ascending=[True, False]
         )
-        top_ten_ranked = top_ten_ranked.groupby("User-ID").head(10)
-    return top_ten_ranked
+
+        top_ranked = top_ranked.groupby("User-ID").head(10)
+    return top_ranked

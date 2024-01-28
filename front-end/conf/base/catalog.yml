@@ -1,0 +1,44 @@
+# Here you can define all your data sets by using simple YAML syntax.
+#
+# Documentation for this file format can be found in "The Data Catalog"
+# Link: https://docs.kedro.org/en/stable/data/data_catalog.html
+book_ratings:
+    type: pandas.CSVDataSet
+    filepath: ../book-recommendation-ml/data/01_raw/BX-Book-Ratings.csv
+    load_args:
+        sep: ';'
+        on_bad_lines: "skip"
+        encoding: "latin-1"
+        usecols:
+            - "User-ID"
+            - "ISBN"
+            - "Book-Rating"
+users:
+    type: pandas.CSVDataSet
+    filepath: ../book-recommendation-ml/data/01_raw/BX-users.csv
+    load_args:
+        sep: ';'
+        on_bad_lines: "skip"
+        encoding: "latin-1"
+        usecols: ['User-ID', 'Location', 'Age']
+books:
+    type: pandas.CSVDataSet
+    filepath: ../book-recommendation-ml/data/01_raw/BX_Books.csv
+    load_args:
+        sep: ';'
+        on_bad_lines: "skip"
+        encoding: "latin-1"
+        usecols: ['ISBN', 'Book-Title', 'Book-Author', 'Year-Of-Publication', 'Publisher', 'Image-URL-S',
+                     'Image-URL-M', 'Image-URL-L']
+merged_data:
+    type: pandas.CSVDataSet
+    filepath: ../book-recommendation-ml/data/02_intermediate/merged_data.csv
+primary_data:
+    type: pandas.CSVDataSet
+    filepath: ../book-recommendation-ml/data/03_primary/primary_data.csv
+recommended_items:
+    type: pandas.CSVDataSet
+    filepath: ../book-recommendation-ml/data/07_model_output/recommended_items.csv
+popular_books:
+    type: pandas.CSVDataSet
+    filepath: ../book-recommendation-ml/data/07_model_output/popular_books.csv

@@ -65,10 +65,11 @@ def get_popular_books(df_ratings: pd.DataFrame, df_books: pd.DataFrame) -> pd.Da
 
         # Counting the number of ratings for each book
         num_rating_df = ratings_with_name.groupby('Book-Title').count()['Book-Rating'].reset_index()
+
         num_rating_df.rename(columns={'Book-Rating': 'num_ratings'}, inplace=True)
 
         # Calculating the average rating for each book
-        avg_rating_df = ratings_with_name.groupby('Book-Title').mean()['Book-Rating'].reset_index()
+        avg_rating_df = ratings_with_name.groupby('Book-Title')['Book-Rating'].mean().reset_index()
         avg_rating_df.rename(columns={'Book-Rating': 'avg_rating'}, inplace=True)
 
         # Merging num_rating and avg_rating dataframes on the 'Book-Title' column
@@ -76,9 +77,6 @@ def get_popular_books(df_ratings: pd.DataFrame, df_books: pd.DataFrame) -> pd.Da
 
         # Sorting books that have received more than 250 ratings and highest average ratings
         popular_df = popular_df[popular_df['num_ratings'] >= 250].sort_values('avg_rating', ascending=False)
-
-        # Convert 'ISBN' to string explicitly
-        popular_df['ISBN'] = popular_df['ISBN'].astype(str)
 
         # Merging with the 'df_books' DataFrame on 'Book-Title'
         popular_df = popular_df.merge(df_books, on='Book-Title')

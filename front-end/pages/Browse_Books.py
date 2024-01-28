@@ -6,7 +6,7 @@ import os
 def browse_books(filepath_books, filepath_ratings):
     st.title("Book Search")
 
-    USER_ID = 0
+    USER_ID = 40943
 
     columns_to_drop = [
         "Image-URL-S",
@@ -14,7 +14,7 @@ def browse_books(filepath_books, filepath_ratings):
         "Image-URL-L"
     ]
 
-    df_ratings = pd.read_csv(filepath_ratings, sep=",", encoding="latin1")
+    df_ratings = pd.read_csv(filepath_ratings, sep=";", encoding="latin1")
     df_books = pd.read_csv(filepath_books, sep=";", encoding="latin1")
     df_books.drop(columns_to_drop, axis=1, inplace=True)
     df_books = df_books.dropna()
@@ -61,13 +61,11 @@ def main():
     st.set_page_config(page_title="Book Browser", page_icon="📚")
 
     script_dir = os.path.dirname(__file__)
-    filepath_books = "..\\..\\book-recommendation-ml\\data\\01_raw\\BX_Books.csv"
-    filepath_ratings = "..\\..\\book-recommendation-ml\\data\\01_raw\\BX-Book-Ratings.csv"
+    filepath = os.path.join("..","..","book-recommendation-ml", "data", "01_raw")
+    filepath_books = os.path.join(filepath, "BX_Books.csv")
+    filepath_ratings = os.path.join(filepath, "BX-Book-Ratings.csv")
     abs_path_books = os.path.join(script_dir, filepath_books)
     abs_path_ratings = os.path.join(script_dir, filepath_ratings)
-
-
-    print(script_dir)
 
     browse_books(abs_path_books, abs_path_ratings)
 

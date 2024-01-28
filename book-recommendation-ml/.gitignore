@@ -14,7 +14,6 @@ data/**
 logs/**
 
 # except their sub-folders
-!data/01_raw/
 !data/**/
 !logs/**/
 
@@ -22,7 +21,9 @@ logs/**
 !.gitkeep
 
 # also keep the example dataset
-!data/01_raw/iris.csv
+!data/01_raw/BX_Books.csv
+!data/01_raw/BX-Book-Ratings.csv
+!data/01_raw/BX-Users.csv
 
 
 ##########################

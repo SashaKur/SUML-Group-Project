@@ -14,6 +14,7 @@ data/**
 logs/**
 
 # except their sub-folders
+!data/01_raw/
 !data/**/
 !logs/**/
 

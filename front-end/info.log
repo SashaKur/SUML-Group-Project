@@ -227,3 +227,6 @@
 2024-01-28 14:58:20,654 - kedro.runner.sequential_runner - INFO - Completed 3 out of 3 tasks
 2024-01-28 14:58:20,661 - kedro.runner.sequential_runner - INFO - Pipeline execution completed successfully.
 2024-01-28 14:58:20,665 - kedro.io.data_catalog - INFO - Loading data from 'cf_preds_df' (MemoryDataset)...
+2024-01-28 14:58:43,560 - py.warnings - WARNING - C:\Users\Sasha\Desktop\SUML PROJECT FINAL\SUML-Group-Project\front-end\pages\Browse_Books.py:52: UserWarning: This pattern is interpreted as a regular expression, and has match groups. To actually get the groups, use str.extract.
+  (df["Book-Title"].str.contains(title, case=False)) &
+

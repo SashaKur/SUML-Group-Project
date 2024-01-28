@@ -30,31 +30,15 @@ books:
         encoding: "latin-1"
         usecols: ['ISBN', 'Book-Title', 'Book-Author', 'Year-Of-Publication', 'Publisher', 'Image-URL-S',
                      'Image-URL-M', 'Image-URL-L']
-book_rating_merged_cleaned:
-    type: pandas.CSVDataSet
-    filepath: data/02_intermediate/book_rating_merged_cleaned.csv
-user_rating_count:
-    type: pandas.CSVDataSet
-    filepath: data/03_primary/user_rating_count.csv
-user_rating_count_normalised:
-    type: pandas.CSVDataSet
-    filepath: data/05_model_input/user_rating_count_normalised.csv
-top_ten_ranked:
-    type: pandas.CSVDataSet
-    filepath: data/07_model_output/top_ten_ranked.csv
 merged_data:
     type: pandas.CSVDataSet
     filepath: data/02_intermediate/merged_data.csv
-cleaned_data:
-    type: pandas.CSVDataSet
-    filepath: data/03_primary/cleaned_data.csv
-renamed_data:
-    type: pandas.CSVDataSet
-    filepath: data/04_feature/renamed_data.csv
 primary_data:
     type: pandas.CSVDataSet
     filepath: data/03_primary/primary_data.csv
-# regressor:
-#   type: pickle.PickleDataset
-#   filepath: data/06_models/regressor.pickle
-#   versioned: true
+recommended_items:
+    type: pandas.CSVDataSet
+    filepath: data/07_model_output/recommended_items.csv
+popular_books:
+    type: pandas.CSVDataSet
+    filepath: data/07_model_output/popular_books.csv

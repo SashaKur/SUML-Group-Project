@@ -3,14 +3,14 @@ from __future__ import annotations
 
 from kedro.framework.project import find_pipelines
 from kedro.pipeline import Pipeline
-from .pipelines.model_training import regressor_pipeline
-from .pipelines.model_training import tensorflow_pipeline
-from .pipelines.data_preprocessing.standard_preprocessing_pipeline import (
-    create_data_preprocessing_pipeline,
-)
-from .pipelines.data_preprocessing.tensorflow_prep_pipeline import (
-    create_tensor_flow_prep_pipeline,
-)
+from .pipelines.data_preprocessing import preprocessing_pipeline
+from .pipelines.model_bulding import collab_filtering_pipeline
+from .pipelines.model_bulding import popularity_pipeline
+
+from .pipelines.data_preprocessing.preprocessing_pipeline import create_preprocessing_pipeline
+from .pipelines.model_bulding.collab_filtering_pipeline import create_model_pipeline
+from .pipelines.model_bulding.popularity_pipeline import create_popularity_books_pipeline
+
 
 
 def register_pipelines() -> dict[str, Pipeline]:
@@ -20,15 +20,13 @@ def register_pipelines() -> dict[str, Pipeline]:
         A mapping from pipeline names to ``Pipeline`` objects.
     """
     pipelines = find_pipelines()
-    data_processing_pipeline = create_data_preprocessing_pipeline()
-    model_train_pipeline = regressor_pipeline.create_model_training_pipeline()
-    tensorflow_prep_pipeline = create_tensor_flow_prep_pipeline()
-    tensorflow_train_pipeline = tensorflow_pipeline.create_model_training_pipeline()
+    data_processing_pipeline = create_preprocessing_pipeline()
+    model_build_pipeline = create_model_pipeline()
+    popularity_model_pipeline = create_popularity_books_pipeline()
 
     return {
-        "__default__": model_train_pipeline,
+        "__default__": collab_filtering_pipeline,
         "data_processing": data_processing_pipeline,
-        "model_train": model_train_pipeline,
-        "tf_prep": tensorflow_prep_pipeline,
-        "tf_train": tensorflow_train_pipeline,
+        "model_build": model_build_pipeline,
+        "popular_books": popularity_model_pipeline
     }

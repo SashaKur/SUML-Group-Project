@@ -3,8 +3,10 @@ import pandas as pd
 import os
 
 # Function to browse books
-def browse_books(filepath):
+def browse_books(filepath_books, filepath_ratings):
     st.title("Book Search")
+
+    USER_ID = 0
 
     columns_to_drop = [
         "Image-URL-S",
@@ -12,20 +14,36 @@ def browse_books(filepath):
         "Image-URL-L"
     ]
 
-    df = pd.read_csv(filepath, sep=";", encoding="latin1")
-    df.drop(columns_to_drop, axis=1, inplace=True)
-    df = df.dropna()
+    df_ratings = pd.read_csv(filepath_ratings, sep=",", encoding="latin1")
+    df_books = pd.read_csv(filepath_books, sep=";", encoding="latin1")
+    df_books.drop(columns_to_drop, axis=1, inplace=True)
+    df_books = df_books.dropna()
     
     # Create form elements
     title = st.text_input("Enter Title:")
     author = st.text_input("Enter Author:")
     publisher = st.text_input("Enter Publisher")
 
-    print(f"Title Filter: {title}")
-    print(f"Author Filter: {author}")
-    print(f"Publisher Filter: {publisher}")
+    filter_books(df_books, title, author, publisher)
 
-    filter_books(df, title, author, publisher)
+    st.sidebar.title("Rate Books")
+
+    # Select a book from the sidebar
+
+    isbn = st.sidebar.text_input('Enter ISBN number:')
+
+    # Slider for rating
+    rating = st.sidebar.slider("Rate the book (0-10):", 0, 10, 5)
+
+    # Save the user's rating in a separate dataframe or file
+    if st.sidebar.button("Submit"):
+        user_rating_entry = pd.DataFrame({"User-ID": [USER_ID], "ISBN": [isbn], "Book-Rating": [rating]})
+        df_ratings = df_ratings[(df_ratings["User-ID"] != USER_ID) | (df_ratings["ISBN"] != isbn)]
+        df_ratings = pd.concat([df_ratings, user_rating_entry], ignore_index=True)
+
+        df_ratings.to_csv(filepath_ratings, index=False, sep=";")
+
+        st.sidebar.success("Rating submitted successfully!")
 
 def filter_books(df, title, author, publisher):
     st.subheader("Filtered Books:")
@@ -43,12 +61,15 @@ def main():
     st.set_page_config(page_title="Book Browser", page_icon="📚")
 
     script_dir = os.path.dirname(__file__)
-    filepath = "..\\..\\book-recommendation-ml\\data\\01_raw\\BX_Books.csv"
-    abs_path = os.path.join(script_dir, filepath)
+    filepath_books = "..\\..\\book-recommendation-ml\\data\\01_raw\\BX_Books.csv"
+    filepath_ratings = "..\\..\\book-recommendation-ml\\data\\01_raw\\BX-Book-Ratings.csv"
+    abs_path_books = os.path.join(script_dir, filepath_books)
+    abs_path_ratings = os.path.join(script_dir, filepath_ratings)
+
 
     print(script_dir)
 
-    browse_books(abs_path)
+    browse_books(abs_path_books, abs_path_ratings)
 
 if __name__ == "__main__":
     main()

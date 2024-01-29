@@ -1,3 +1,7 @@
+'''
+Code for creating and defining collab filtering pipeline
+'''
+
 from kedro.pipeline import Pipeline, node, pipeline
 
 from .nodes import select_eager_users, singular_val_decompose, recommend_items

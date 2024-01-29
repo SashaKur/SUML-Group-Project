@@ -1,8 +1,13 @@
+'''
+File with nodes for data preprocessing used in preprocessing pipeline
+'''
+
 import sys
+import logging
 
 import numpy as np
 import pandas as pd
-import logging
+
 
 logger = logging.getLogger("nodes logger")
 logger.setLevel(logging.INFO)
@@ -28,14 +33,15 @@ def get_country(x):
 def books_cleanup(df_books: pd.DataFrame) -> pd.DataFrame:
 
     df_books['Book-Author'].fillna('Unknown',inplace=True)
-    df_books['new_title'] = df_books.apply(lambda x : change_title(x['Book-Title'],x['Book-Author']),axis = 1)
+    df_books['new_title'] = df_books.apply(lambda x : change_title(x['Book-Title'],
+                                                                   x['Book-Author']),axis = 1)
 
     df_books = df_books.drop_duplicates(subset='new_title',keep='first')
 
     return df_books
 
 def merge_datasets(df_books: pd.DataFrame, df_ratings: pd.DataFrame, df_users: pd.DataFrame) -> pd.DataFrame:
-   
+
     #merging all the three dataset
     df_merged = df_ratings.merge(df_books,how='inner',on='ISBN')
     df_merged = df_merged.merge(df_users,how='inner',on='User-ID')
@@ -46,8 +52,8 @@ def add_length_column(df_merged: pd.DataFrame) -> pd.DataFrame:
 
     #adding a new column that measures the length of the title
     df_merged['Title-Length'] = df_merged['Book-Title'].apply(len)
-    df_merged['Year-Of-Publication'] = pd.to_numeric(df_merged['Year-Of-Publication'], errors='coerce').fillna(2099, downcast = 'infer')
-
+    df_merged['Year-Of-Publication'] = pd.to_numeric(df_merged['Year-Of-Publication'],
+                                                errors='coerce').fillna(2099, downcast = 'infer')
 
     # extracting countries from location column
     df_merged['Location'] = df_merged['Location'].apply(get_country)
@@ -112,10 +118,12 @@ def get_rating_stats(df_merged: pd.DataFrame) -> pd.DataFrame:
 
 def year_column_cleanup(df_merged: pd.DataFrame) -> pd.DataFrame:
 
-    # Casting Year-Of-Publication to numeric datatype and removing all String Noice Values using coerce functionality.
+    # Casting Year-Of-Publication to numeric datatype 
+    # and removing all String Noice Values using coerce functionality.
     df_merged['Year-Of-Publication'] = pd.to_numeric(df_merged['Year-Of-Publication'], 'coerce')
 
-    # Removing all the integer Noice Values from the Dataset since the dataset used contains only books released before 2007.
+    # Removing all the integer Noice Values from
+    # the Dataset since the dataset used contains only books released before 2007.
     df_merged = df_merged[(df_merged['Year-Of-Publication']<=2006)]
 
     return df_merged
@@ -124,7 +132,7 @@ def select_optimal_books(df_merged: pd.DataFrame) -> pd.DataFrame:
 
     # counting the ratings per ISBN
     books_reduce=df_merged.groupby(['ISBN'])['Book-Rating'].count().reset_index().sort_values('Book-Rating',ascending=False)
-    
+
     #Considering all the counts greater than 10
     reduced_books=books_reduce[books_reduce['Book-Rating']>10]['ISBN']
 

@@ -1,3 +1,7 @@
+'''
+Entry-point for Streamlit application, all the pages are located in pages/ folder
+'''
+
 import streamlit as st
 
 # Entry point to run the web application

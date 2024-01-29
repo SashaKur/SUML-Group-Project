@@ -1,12 +1,17 @@
+'''
+Browse books tab used for browsing and filtering books
+'''
+
+import os
+
 import streamlit as st
 import pandas as pd
-import os
 
 # Function to browse books
 def browse_books(filepath_books, filepath_ratings):
     st.title("Book Search")
 
-    USER_ID = 40943
+    user_id = 40943
 
     columns_to_drop = [
         "Image-URL-S",
@@ -37,8 +42,9 @@ def browse_books(filepath_books, filepath_ratings):
 
     # Save the user's rating in a separate dataframe or file
     if st.sidebar.button("Submit"):
-        user_rating_entry = pd.DataFrame({"User-ID": [USER_ID], "ISBN": [isbn], "Book-Rating": [rating]})
-        df_ratings = df_ratings[(df_ratings["User-ID"] != USER_ID) | (df_ratings["ISBN"] != isbn)]
+        user_rating_entry = pd.DataFrame({"User-ID": [user_id],
+                                           "ISBN": [isbn], "Book-Rating": [rating]})
+        df_ratings = df_ratings[(df_ratings["User-ID"] != user_id) | (df_ratings["ISBN"] != isbn)]
         df_ratings = pd.concat([df_ratings, user_rating_entry], ignore_index=True)
 
         df_ratings.to_csv(filepath_ratings, index=False, sep=";")

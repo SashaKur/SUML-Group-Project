@@ -1,3 +1,7 @@
+'''
+File with nodes for model building used in pipelines collab_filtering_pipeline, popularity_pipeline
+'''
+
 import numpy as np
 import pandas as pd
 from scipy.sparse import csr_matrix
@@ -28,20 +32,21 @@ def select_eager_users(df_ratings: pd.DataFrame, df_books: pd.DataFrame) -> pd.D
 
 
 def singular_val_decompose(users_items_pivot_matrix : pd.DataFrame) -> pd.DataFrame:
-        
+
     # The number of factors to factor the user-item matrix.
-    NUMBER_OF_FACTORS_MF = 15
+    num_of_factors = 15
 
     pt_sparse = csr_matrix(users_items_pivot_matrix.fillna(0))
 
     #Performs matrix factorization of the original user item matrix
-    U, sigma, Vt = svds(pt_sparse, k = NUMBER_OF_FACTORS_MF)
+    u, sigma, vt = svds(pt_sparse, k = num_of_factors)
 
-    sigma = np.diag(sigma) 
-    all_user_predicted_ratings = np.dot(np.dot(U, sigma), Vt) 
+    sigma = np.diag(sigma)
+    all_user_predicted_ratings = np.dot(np.dot(u, sigma), vt)
 
     #Converting the reconstructed matrix back to a Pandas dataframe
-    cf_preds_df = pd.DataFrame(all_user_predicted_ratings, columns = users_items_pivot_matrix.columns)
+    cf_preds_df = pd.DataFrame(all_user_predicted_ratings,
+                                columns = users_items_pivot_matrix.columns)
 
     return cf_preds_df
 
@@ -76,7 +81,8 @@ def get_popular_books(df_ratings: pd.DataFrame, df_books: pd.DataFrame) -> pd.Da
     popular_df = num_rating_df.merge(avg_rating_df, on='Book-Title')
 
     # Sorting books that have received more than 250 ratings and highest average ratings
-    popular_df = popular_df[popular_df['num_ratings'] >= 250].sort_values('avg_rating', ascending=False)
+    popular_df = popular_df[popular_df['num_ratings'] >= 250].sort_values('avg_rating',
+                                                                           ascending=False)
 
     # Merging with the 'df_books' DataFrame on 'Book-Title'
     popular_df = popular_df.merge(df_books, on='Book-Title')

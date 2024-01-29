@@ -1,3 +1,7 @@
+'''
+Code for creating and defining popularity pipeline
+'''
+
 from kedro.pipeline import Pipeline, node, pipeline
 
 from .nodes import get_popular_books

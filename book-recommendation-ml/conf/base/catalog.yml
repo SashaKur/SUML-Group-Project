@@ -15,7 +15,7 @@ book_ratings:
             - "Book-Rating"
 users:
     type: pandas.CSVDataSet
-    filepath: data/01_raw/BX-users.csv
+    filepath: data/01_raw/BX-Users.csv
     load_args:
         sep: ';'
         on_bad_lines: "skip"

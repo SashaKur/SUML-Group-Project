@@ -1,9 +1,15 @@
+'''
+Recommend books page used for recommendations based on 
+popularity and colaborative filtering approaches
+'''
+
+import os
+from pathlib import Path
+
 import streamlit as st
 import pandas as pd
-import os
 from kedro.framework.session import KedroSession
 from kedro.framework.startup import bootstrap_project
-from pathlib import Path
 
 def recommend_books(filepath, filepath_ratings, filepath_recom, filepath_popular):
     st.title("Users' Book Recommendations")
@@ -17,9 +23,10 @@ def recommend_books(filepath, filepath_ratings, filepath_recom, filepath_popular
         bootstrap_project(Path(filepath))
         with KedroSession.create(conf_source="conf") as session:
             session.run(pipeline_name="popular_books")
-            
+
         df_recommendations = pd.read_csv(filepath_popular, sep=",")
-        st.dataframe(df_recommendations[["Book-Title", "avg_rating"]], hide_index=True, use_container_width=True)
+        st.dataframe(df_recommendations[["Book-Title", "avg_rating"]],
+                      hide_index=True, use_container_width=True)
 
     if st.sidebar.button("Get recommendations"):
         if user_ratings_count < 5:
@@ -28,10 +35,12 @@ def recommend_books(filepath, filepath_ratings, filepath_recom, filepath_popular
             bootstrap_project(Path(filepath))
             with KedroSession.create(conf_source="conf") as session:
                 session.run(pipeline_name="model_build")
-            
-            df_recommendations = pd.read_csv(filepath_recom, sep=",")
-            st.dataframe(df_recommendations["Book-Title"], hide_index=True, use_container_width=True)
-            
+
+            df_recommendations = pd.read_csv(filepath_recom,
+                                              sep=",")
+            st.dataframe(df_recommendations["Book-Title"],
+                             hide_index=True, use_container_width=True)
+
 def main():
     st.set_page_config(page_title="Get a Recommendation", page_icon="📚")
 
@@ -55,4 +64,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

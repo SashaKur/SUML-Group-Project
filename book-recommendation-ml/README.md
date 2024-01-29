@@ -47,16 +47,7 @@ The project structure follows the Kedro template and is organized as follows:
 - `.gitignore`: Git ignore file.
 - `pyproject.toml`: Project metadata and dependencies.
 
-## Getting Started
-
-### Prerequisites
-
-Make sure you have Python and Kedro installed. You can install Kedro using the following:
-
-```bash
-pip install kedro
-```
-### Installation
+## Installation
 
 1. Clone the repository
 ```bash
@@ -78,4 +69,9 @@ To execute separate pipelines, use the following commands:
 kedro run --pipeline=data_processing // For data processing
 kedro run --pipeline=model_build // For collaborative filtering model
 kedro run --pipeline=popular_books // For getting books based on popularity
+```
+
+To run the Streamlit web application, use the following command, make sure you are in front-end/ folder:
+```bash
+streamlit run Main_Page.py
 ```
